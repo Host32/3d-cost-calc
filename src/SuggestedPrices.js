@@ -49,8 +49,8 @@ function SuggestedPrices({ costs }) {
               <input
                 type="range"
                 className="form-range"
-                min="80"
-                max="200"
+                min="5"
+                max="500"
                 value={context.markup}
                 onChange={(e) => context.setMarkup(e.target.value)}
               />

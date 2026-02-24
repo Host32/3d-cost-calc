@@ -25,18 +25,24 @@ function CostBreakdown({ costs }) {
       </div>
       <div className="card-body">
         {/* summary section with destaque */}
-        <div className="cost-summary mb-2">
-          <div className="summary-item direct">
-            <span className="label">Custo Direto:</span>
-            <span className="value">R${custoDireto.toFixed(2)}</span>
+        <div className="cost-summary mb-2 row">
+          <div class="col-md-4 mb-1">
+            <div className="summary-item direct">
+              <span className="label">Custo Direto:</span>
+              <span className="value">R${custoDireto.toFixed(2)}</span>
+            </div>
           </div>
-          <div className="summary-item taxas">
-            <span className="label">Taxas:</span>
-            <span className="value">R${costs.custoTaxas.toFixed(2)}</span>
+          <div class="col-md-4 mb-1">
+            <div className="summary-item taxas">
+              <span className="label">Taxas:</span>
+              <span className="value">R${costs.custoTaxas.toFixed(2)}</span>
+            </div>
           </div>
-          <div className="summary-item total">
-            <span className="label">Custo Total:</span>
-            <span className="value">R${costs.custoTotal.toFixed(2)}</span>
+          <div class="col-md-4 mb-1">
+            <div className="summary-item total">
+              <span className="label">Custo Total:</span>
+              <span className="value">R${costs.custoTotal.toFixed(2)}</span>
+            </div>
           </div>
         </div>
 
