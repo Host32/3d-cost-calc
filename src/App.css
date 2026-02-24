@@ -69,7 +69,7 @@ body {
 .card-header-custom {
   background: #f8f9fa;
   border-bottom: 2px solid #e9ecef;
-  padding: 20px;
+  padding: 10px 20px;
   margin: 0;
 }
 
@@ -90,13 +90,13 @@ body {
 
 .card-header-custom h3 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #333;
 }
 
 .card-body {
-  padding: 25px;
+  padding: 10px 20px;
 }
 
 .form-label {
@@ -276,6 +276,47 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0;
+}
+
+.cost-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #333;
+  gap: 12px;
+}
+
+/* individual summary boxes */
+.summary-item {
+  display: flex;
+  align-items: center;
+  background: #f0f4ff;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.summary-item.direct {
+  border-left: 4px solid #fffb15;
+}
+
+.summary-item.taxas {
+  border-left: 4px solid #ffa600;
+}
+
+.summary-item.total {
+  border-left: 4px solid #ff3700;
+}
+
+.summary-item .label {
+  font-weight: 600;
+  margin-right: 6px;
+  color: #333;
+}
+
+.summary-item .value {
+  font-weight: 700;
+  color: #222;
 }
 
 .cost-row {

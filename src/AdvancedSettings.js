@@ -5,7 +5,7 @@ import { CalculatorContext } from "./CalculatorContext";
 function AdvancedSettings({ costs }) {
   const context = useContext(CalculatorContext);
   return (
-    <div className="col-12 mb-4">
+    <div className="col-12 mb-2">
       <div className="card card-section">
         <button
           className="accordion-button collapsed"
@@ -18,6 +18,17 @@ function AdvancedSettings({ costs }) {
         {context.mostrarAvancadas && (
           <div className="card-body">
             <div className="advanced-grid mb-3">
+              <AdvancedField
+                label="Contrib. Despesas Fixas"
+                value={context.contribuicaoDespesasFixas}
+                onChange={(e) =>
+                  context.setContribuicaoDespesasFixas(e.target.value)
+                }
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                currencyPrefix="%"
+              />
               <AdvancedField
                 label="Taxa de energia"
                 value={context.custoEletricidadeHora}

@@ -4,6 +4,8 @@ export const CalculatorContext = createContext();
 
 export function CalculatorProvider({ children }) {
   // Entradas básicas
+  const [contribuicaoDespesasFixas, setContribuicaoDespesasFixas] =
+    useState("10");
   const [tipoImpressao, setTipoImpressao] = useState("filamento");
   const [quantidadeMaterial, setQuantidadeMaterial] = useState("");
   const [tipoFilamento, setTipoFilamento] = useState("pla");
@@ -16,12 +18,13 @@ export function CalculatorProvider({ children }) {
   const [tempoPintura, setTempoPintura] = useState("");
   const [tempoDeTrabalhoAdicional, setTempoDeTrabalhoAdicional] = useState("");
   const [custoAcessorios, setCustoAcessorios] = useState("");
-  const [custoEmbalagem, setCustoEmbalagem] = useState("");
+  const [custoEmbalagem, setCustoEmbalagem] = useState("1");
   const [impostos, setImpostos] = useState("0");
   const [taxaCartaoCredito, setTaxaCartaoCredito] = useState("10");
   const [marketplaceSelecionado, setMarketplaceSelecionado] =
     useState("semarketplace");
   const [taxaMarketplace, setTaxaMarketplace] = useState(0);
+  const [taxaFixaMarketplace, setTaxaFixaMarketplace] = useState(0);
   const [frete, setFrete] = useState("");
   const [unidadesPorPlaca, setUnidadesPorPlaca] = useState("1");
   const [totalDeUnidades, setTotalDeUnidades] = useState("1");
@@ -55,7 +58,7 @@ export function CalculatorProvider({ children }) {
   const [
     custoMateriaisDescartaveisResina,
     setCustomateriaisDescartaveisResina,
-  ] = useState("0.5");
+  ] = useState("1.5");
 
   const [custoMaoDeObraHora, setCustoMaoDeObraHora] = useState("15");
   const [custoModelagemHora, setCustoModelagemHora] = useState("30");
@@ -70,6 +73,8 @@ export function CalculatorProvider({ children }) {
 
   const value = {
     // Entradas básicas
+    contribuicaoDespesasFixas,
+    setContribuicaoDespesasFixas,
     tipoImpressao,
     setTipoImpressao,
     quantidadeMaterial,
@@ -104,6 +109,8 @@ export function CalculatorProvider({ children }) {
     setMarketplaceSelecionado,
     taxaMarketplace,
     setTaxaMarketplace,
+    taxaFixaMarketplace,
+    setTaxaFixaMarketplace,
     frete,
     setFrete,
     unidadesPorPlaca,

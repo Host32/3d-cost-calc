@@ -5,7 +5,7 @@ import { CalculatorContext } from "./CalculatorContext";
 function UnitParameters() {
   const context = useContext(CalculatorContext);
   return (
-    <div className="card card-section mb-4">
+    <div className="card card-section mb-2">
       <div className="card-header-custom">
         <h3>Parâmetros por unidade</h3>
       </div>

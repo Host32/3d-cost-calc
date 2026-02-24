@@ -18,24 +18,6 @@ const MATERIAIS = {
   personalizado: { nome: "Personalizado", preco: null },
 };
 
-// Taxas dos marketplaces
-const MARKETPLACES = {
-  semarketplace: { nome: "Sem Marketplace", taxa: 0, cartao: 10 },
-  shopee: { nome: "Shopee", taxa: 14, cartao: 0 },
-  shopee_frete: { nome: "Shopee Frete Grátis", taxa: 20, cartao: 0 },
-  mercado_livre_classico: {
-    nome: "Mercado Livre Clássico",
-    taxa: 14,
-    cartao: 0,
-  },
-  mercado_livre_premium: {
-    nome: "Mercado Livre Premium",
-    taxa: 19.5,
-    cartao: 0,
-  },
-  personalizado: { nome: "Personalizado", taxa: null, cartao: 0 },
-};
-
 function AppContent() {
   const context = useContext(CalculatorContext);
 
@@ -133,7 +115,7 @@ function AppContent() {
     const custoPintura =
       (parseFloat(context.custoPinturaHora) || 0) * tempoDePinturaHoras;
 
-    const cmv =
+    const custoInsumosSemFalhas =
       custoDeMaterial +
       custoDeEnergia +
       custoDepreciacao +
@@ -142,8 +124,9 @@ function AppContent() {
       acessorios +
       embalagem;
 
-    const cmvFalhas = cmv / (1 - (parseFloat(context.taxaFalhas) || 0) / 100);
-    const falhas = cmvFalhas - cmv;
+    const custoInsumos =
+      custoInsumosSemFalhas / (1 - (parseFloat(context.taxaFalhas) || 0) / 100);
+    const falhas = custoInsumos - custoInsumosSemFalhas;
 
     const custoServicos =
       custoModelagem +
@@ -151,25 +134,33 @@ function AppContent() {
       custoMaoDeObra +
       parseFloat(context.frete || 0) / unidadesTotal;
 
-    const custoTotal = cmvFalhas + custoServicos;
+    const custoDireto = custoInsumos + custoServicos;
 
     const taxas =
       (parseFloat(context.impostos) || 0) / 100 +
       (parseFloat(context.taxaCartaoCredito) || 0) / 100 +
-      (parseFloat(context.taxaMarketplace) || 0) / 100;
+      (parseFloat(context.taxaMarketplace) || 0) / 100 +
+      (parseFloat(context.contribuicaoDespesasFixas) || 0) / 100;
+
+    const taxasFixas = parseFloat(context.taxaFixaMarketplace) || 0;
 
     // Função helper para calcular um tier de preço
     const calculateTier = (markupValue) => {
       const price =
-        (cmvFalhas * (markupValue / 100 + 1) + custoServicos) / (1 - taxas);
-      const profit = price - custoTotal - price * taxas;
+        (custoInsumos * (markupValue / 100 + 1) + custoServicos + taxasFixas) /
+        (1 - taxas);
+      const profit = price - custoDireto - price * taxas - taxasFixas;
       const profitPercentage = (profit / price) * 100;
+      const taxasVariaveis = taxas * price;
       return {
         price,
         profit,
         profitPercentage,
         batchPrice: price * unidadesTotal,
         batchProfit: profit * unidadesTotal,
+        taxasVariaveis,
+        taxasFixas,
+        taxasTotais: taxasVariaveis + taxasFixas,
       };
     };
 
@@ -180,6 +171,11 @@ function AppContent() {
     const luxo = calculateTier(200);
     const personalizado = calculateTier(parseFloat(context.markup) || 0);
 
+    const custoTaxasVariaveis = personalizado.taxasVariaveis;
+    const custoTaxasFixas = personalizado.taxasFixas;
+    const custoTaxas = personalizado.taxasTotais;
+    const custoTotal = custoDireto + custoTaxas;
+
     // Impostos sobre o preço personalizado
     const impostosSobrePreco =
       personalizado.price * ((parseFloat(context.impostos) || 0) / 100);
@@ -188,6 +184,9 @@ function AppContent() {
       ((parseFloat(context.taxaCartaoCredito) || 0) / 100);
     const taxaMarketplaceSobrePreco =
       personalizado.price * ((parseFloat(context.taxaMarketplace) || 0) / 100);
+    const contribuicaoDespesasFixasSobrePreco =
+      personalizado.price *
+      ((parseFloat(context.contribuicaoDespesasFixas) || 0) / 100);
 
     return {
       depreciacao,
@@ -207,6 +206,12 @@ function AppContent() {
       falhas,
       custoModelagem,
       custoPintura,
+      custoInsumos,
+      custoServicos,
+      custoDireto,
+      custoTaxasVariaveis,
+      custoTaxasFixas,
+      custoTaxas,
       custoTotal,
 
       precoTiers: {
@@ -217,6 +222,7 @@ function AppContent() {
         personalizado,
       },
 
+      contribuicaoDespesasFixasSobrePreco,
       impostosSobrePreco,
       taxaCartaoCreditoSobrePreco,
       taxaMarketplaceSobrePreco,
@@ -242,22 +248,22 @@ function AppContent() {
         <div className="row">
           {/* Left Column - Inputs */}
           <div className="col-lg-5">
+            <Fees costs={costs} />
+            
             <BatchProduction costs={costs} />
 
             <PrintingPlateParameters costs={costs} />
 
             <UnitParameters costs={costs} />
-
-            <Fees costs={costs} />
           </div>
 
           {/* Right Column - Results */}
           <div className="col-lg-7">
-            {/* Suggested Prices */}
-            <SuggestedPrices costs={costs} />
-
             {/* Cost Breakdown */}
             <CostBreakdown costs={costs} />
+
+            {/* Suggested Prices */}
+            <SuggestedPrices costs={costs} />
           </div>
         </div>
       </div>

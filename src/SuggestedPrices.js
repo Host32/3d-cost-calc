@@ -5,7 +5,7 @@ import { CalculatorContext } from "./CalculatorContext";
 function SuggestedPrices({ costs }) {
   const context = useContext(CalculatorContext);
   return (
-    <div className="card card-section mb-4">
+    <div className="card card-section mb-2">
       <div className="card-header-custom">
         <h3>Preços Sugeridos</h3>
       </div>
@@ -16,24 +16,28 @@ function SuggestedPrices({ costs }) {
             markup="100"
             pricingData={costs.precoTiers.competitivo}
             showBatch={context.producaoEmLote}
+            onSelect={() => context.setMarkup(100)}
           />
           <PriceOption
             title="Padrão"
             markup="130"
             pricingData={costs.precoTiers.padrao}
             showBatch={context.producaoEmLote}
+            onSelect={() => context.setMarkup(130)}
           />
           <PriceOption
             title="Premium"
             markup="150"
             pricingData={costs.precoTiers.premium}
             showBatch={context.producaoEmLote}
+            onSelect={() => context.setMarkup(150)}
           />
           <PriceOption
             title="Luxo"
             markup="200"
             pricingData={costs.precoTiers.luxo}
             showBatch={context.producaoEmLote}
+            onSelect={() => context.setMarkup(200)}
           />
         </div>
 

@@ -5,31 +5,23 @@ import { CalculatorContext } from "./CalculatorContext";
 function BatchProduction() {
   const context = useContext(CalculatorContext);
   return (
-    <div className="card card-section mb-4">
+    <div className="card card-section mb-2">
       <div className="card-header-custom">
-        <h3>Produção em lote</h3>
+        <h3>Produção</h3>
       </div>
       <div className="card-body">
         <div className="row">
           <div className="col mb-3">
             <AdvancedField
-              label="Total de unidades"
+              label="Modelagem"
               type="number"
               className="form-control"
-              value={context.totalDeUnidades}
-              onChange={(e) => {
-                if (
-                  parseFloat(e.target.value) >=
-                  parseFloat(context.unidadesPorPlaca)
-                ) {
-                  context.setTotalDeUnidades(e.target.value);
-                } else {
-                  context.setTotalDeUnidades(context.unidadesPorPlaca);
-                }
-              }}
+              value={context.tempoModelagem}
+              onChange={(e) => context.setTempoModelagem(e.target.value)}
               placeholder="0"
               step="1"
-              min={context.unidadesPorPlaca}
+              min="0"
+              currencyPrefix="min"
             />
           </div>
           <div className="col mb-3">
@@ -54,15 +46,16 @@ function BatchProduction() {
           </div>
           <div className="col mb-3">
             <AdvancedField
-              label="Modelagem"
+              label="Total de unidades"
               type="number"
               className="form-control"
-              value={context.tempoModelagem}
-              onChange={(e) => context.setTempoModelagem(e.target.value)}
+              value={context.totalDeUnidades}
+              onChange={(e) => {
+                context.setTotalDeUnidades(e.target.value);
+              }}
               placeholder="0"
               step="1"
-              min="0"
-              currencyPrefix="min"
+              min={context.unidadesPorPlaca}
             />
           </div>
         </div>

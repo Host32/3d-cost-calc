@@ -49,7 +49,7 @@ function PrintingPlateParameters() {
   };
 
   return (
-    <div className="card card-section mb-4">
+    <div className="card card-section mb-2">
       <div className="card-header-custom">
         <h3>Parâmetros por placa de impressão</h3>
       </div>
@@ -157,7 +157,7 @@ function PrintingPlateParameters() {
         <div className="row">
           <div className="col mb-3">
             <AdvancedField
-              label="Preparo (fatiar, trocar o material e iniciar)"
+              label="Preparo"
               type="number"
               className="form-control"
               value={context.tempoPreparacaoMinutos}
@@ -172,7 +172,7 @@ function PrintingPlateParameters() {
           </div>
           <div className="col mb-3">
             <AdvancedField
-              label="Finalização (remover impressão, remover suportes e embalar)"
+              label="Finalização"
               type="number"
               className="form-control"
               value={context.tempoFinalizacaoMinutos}
@@ -185,21 +185,21 @@ function PrintingPlateParameters() {
               currencyPrefix="min"
             />
           </div>
-        </div>
-        <div className="col mb-3">
-          <AdvancedField
-            label="Trabalho adicional"
-            type="number"
-            className="form-control"
-            value={context.tempoDeTrabalhoAdicional}
-            onChange={(e) =>
-              context.setTempoDeTrabalhoAdicional(e.target.value)
-            }
-            placeholder="0"
-            step="1"
-            min="0"
-            currencyPrefix="min"
-          />
+          <div className="col mb-3">
+            <AdvancedField
+              label="Trabalho adicional"
+              type="number"
+              className="form-control"
+              value={context.tempoDeTrabalhoAdicional}
+              onChange={(e) =>
+                context.setTempoDeTrabalhoAdicional(e.target.value)
+              }
+              placeholder="0"
+              step="1"
+              min="0"
+              currencyPrefix="min"
+            />
+          </div>
         </div>
       </div>
     </div>
