@@ -14,7 +14,7 @@ const MATERIAIS = {
   pla: { nome: "PLA", preco: 100 },
   pla_especial: { nome: "PLA Especial", preco: 120 },
   petg: { nome: "PETG", preco: 100 },
-  abs: { nome: "ABS", preco: 70 },
+  abs: { nome: "ABS", preco: 85 },
   personalizado: { nome: "Personalizado", preco: null },
 };
 
