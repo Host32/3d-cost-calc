@@ -10,13 +10,13 @@ import CostBreakdown from "./CostBreakdown";
 import { CalculatorContext, CalculatorProvider } from "./CalculatorContext";
 
 // Preços dos filamentos por kg
-const MATERIAIS = {
-  pla: { nome: "PLA", preco: 100 },
-  pla_especial: { nome: "PLA Especial", preco: 120 },
-  petg: { nome: "PETG", preco: 100 },
-  abs: { nome: "ABS", preco: 70 },
-  personalizado: { nome: "Personalizado", preco: null },
-};
+const SHOPEE_FAIXAS = [
+  { ate: 79.99, taxa: 20, fixo: 4.5 },
+  { ate: 99.99, taxa: 14, fixo: 16 },
+  { ate: 199.99, taxa: 14, fixo: 20 },
+  { ate: 499.99, taxa: 14, fixo: 26 },
+  { ate: Infinity, taxa: 14, fixo: 26 },
+];
 
 function AppContent() {
   const context = useContext(CalculatorContext);
@@ -136,33 +136,61 @@ function AppContent() {
 
     const custoDireto = custoInsumos + custoServicos;
 
-    const taxas =
-      (parseFloat(context.impostos) || 0) / 100 +
-      (parseFloat(context.taxaCartaoCredito) || 0) / 100 +
-      (parseFloat(context.taxaMarketplace) || 0) / 100 +
-      (parseFloat(context.contribuicaoDespesasFixas) || 0) / 100;
-
-    const taxasFixas = parseFloat(context.taxaFixaMarketplace) || 0;
+    const taxasSemMarketplace =
+    (parseFloat(context.impostos) || 0) / 100 +
+    (parseFloat(context.taxaCartaoCredito) || 0) / 100 +
+    (parseFloat(context.contribuicaoDespesasFixas) || 0) / 100;
 
     // Função helper para calcular um tier de preço
     const calculateTier = (markupValue) => {
-      const price =
-        (custoInsumos * (markupValue / 100 + 1) + custoServicos + taxasFixas) /
-        (1 - taxas);
-      const profit = price - custoDireto - price * taxas - taxasFixas;
-      const profitPercentage = (profit / price) * 100;
-      const taxasVariaveis = taxas * price;
-      return {
-        price,
-        profit,
-        profitPercentage,
-        batchPrice: price * unidadesTotal,
-        batchProfit: profit * unidadesTotal,
-        taxasVariaveis,
-        taxasFixas,
-        taxasTotais: taxasVariaveis + taxasFixas,
-      };
-    };
+  const precoBase =
+    custoInsumos * (markupValue / 100 + 1) + custoServicos;
+
+  let taxaMarketplacePercentual =
+    parseFloat(context.taxaMarketplace) || 0;
+  let taxasFixasAplicadas =
+    parseFloat(context.taxaFixaMarketplace) || 0;
+  let taxasAplicadas =
+    taxasSemMarketplace + taxaMarketplacePercentual / 100;
+
+  if (context.marketplaceSelecionado === "shopee") {
+    const faixaShopee =
+      SHOPEE_FAIXAS.find((faixa) => {
+        const totalTaxas =
+          taxasSemMarketplace + faixa.taxa / 100;
+        const precoCalculado =
+          (precoBase + faixa.fixo) / (1 - totalTaxas);
+        const precoArredondado =
+          Math.round((precoCalculado + Number.EPSILON) * 100) / 100;
+
+        return precoArredondado <= faixa.ate;
+      }) || SHOPEE_FAIXAS[SHOPEE_FAIXAS.length - 1];
+
+    taxaMarketplacePercentual = faixaShopee.taxa;
+    taxasFixasAplicadas = faixaShopee.fixo;
+    taxasAplicadas =
+      taxasSemMarketplace + taxaMarketplacePercentual / 100;
+  }
+
+  const price =
+    (precoBase + taxasFixasAplicadas) / (1 - taxasAplicadas);
+  const profit =
+    price - custoDireto - price * taxasAplicadas - taxasFixasAplicadas;
+  const profitPercentage = (profit / price) * 100;
+  const taxasVariaveis = taxasAplicadas * price;
+
+  return {
+    price,
+    profit,
+    profitPercentage,
+    batchPrice: price * unidadesTotal,
+    batchProfit: profit * unidadesTotal,
+    taxasVariaveis,
+    taxasFixas: taxasFixasAplicadas,
+    taxasTotais: taxasVariaveis + taxasFixasAplicadas,
+    taxaMarketplacePercentual,
+  };
+};
 
     // Calcular tiers pré-definidos
     const competitivo = calculateTier(100);
@@ -183,7 +211,8 @@ function AppContent() {
       personalizado.price *
       ((parseFloat(context.taxaCartaoCredito) || 0) / 100);
     const taxaMarketplaceSobrePreco =
-      personalizado.price * ((parseFloat(context.taxaMarketplace) || 0) / 100);
+      personalizado.price *
+     (personalizado.taxaMarketplacePercentual / 100);
     const contribuicaoDespesasFixasSobrePreco =
       personalizado.price *
       ((parseFloat(context.contribuicaoDespesasFixas) || 0) / 100);

@@ -304,7 +304,7 @@ function CostBreakdown({ costs }) {
               <span>Marketplace</span>
               <span className="cost-value">
                 R${costs.taxaMarketplaceSobrePreco.toFixed(2)} + R$
-                {context.taxaFixaMarketplace.toFixed(2)}
+                {costs.custoTaxasFixas.toFixed(2)}
               </span>
               {context.producaoEmLote && (
                 <span className="cost-value">
@@ -315,7 +315,7 @@ function CostBreakdown({ costs }) {
                     ).toFixed(2)}{" "}
                     + R$
                     {(
-                      context.taxaFixaMarketplace * context.totalDeUnidades
+                      costs.taxaFixaMarketplace * context.totalDeUnidades
                     ).toFixed(2)}
                   </strong>
                 </span>

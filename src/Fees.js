@@ -15,12 +15,7 @@ const MARKETPLACES = {
     taxa: 14,
     fixo: 0,
     cartao: 0,
-  },
-  shopee_frete: {
-    nome: "Shopee Frete Grátis",
-    taxa: 20,
-    fixo: 4,
-    cartao: 0,
+    dinamico: true,
   },
   mercado_livre_classico: {
     nome: "Mercado Livre Clássico",
@@ -73,8 +68,10 @@ function Fees({ costs }) {
             >
               {Object.entries(MARKETPLACES).map(([chave, marketplace]) => (
                 <option key={chave} value={chave}>
-                  {marketplace.nome}
-                  {marketplace.taxa !== null &&
+                 {marketplace.nome}
+                  {marketplace.dinamico
+                    ? " - taxa por faixa de preço"
+                    : marketplace.taxa !== null &&
                     ` - ${marketplace.taxa}% + R$${marketplace.fixo}`}
                 </option>
               ))}
@@ -88,7 +85,10 @@ function Fees({ costs }) {
               label="Taxa do Marketplace"
               type="number"
               className="form-control"
-              value={context.taxaMarketplace}
+              value={
+              context.marketplaceSelecionado === "shopee"
+              ? costs.precoTiers.personalizado.taxaMarketplacePercentual
+              : context.taxaMarketplace}
               onChange={(e) => context.setTaxaMarketplace(e.target.value)}
               placeholder="0"
               step="0.1"
@@ -102,7 +102,10 @@ function Fees({ costs }) {
               label="Taxa Fixa do Marketplace"
               type="number"
               className="form-control"
-              value={context.taxaFixaMarketplace}
+              value={
+               context.marketplaceSelecionado === "shopee"
+               ? costs.custoTaxasFixas
+               : context.taxaFixaMarketplace}
               onChange={(e) => context.setTaxaFixaMarketplace(e.target.value)}
               placeholder="0"
               step="0.1"
