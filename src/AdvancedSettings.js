@@ -279,6 +279,69 @@ function AdvancedSettings({ costs }) {
                 currencyPrefix="R$"
               />
             </div>
+
+            <h5 className="mb-1 mt-4">Corte a laser</h5>
+            <div className="advanced-grid">
+              <AdvancedField
+                label="Preço"
+                value={context.precoCorteLaser}
+                onChange={(e) => context.setPrecoCorteLaser(e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                currencyPrefix
+              />
+
+              <AdvancedField
+                label="Vida Útil"
+                value={context.vidaUtilCorteLaser}
+                onChange={(e) => context.setVidaUtilCorteLaser(e.target.value)}
+                placeholder="0"
+                step="100"
+                min="0"
+                currencyPrefix="hrs"
+              />
+
+              <AdvancedField
+                label="Depreciação"
+                value={costs.depreciacaoCorteLaser.toFixed(2)}
+                placeholder="0"
+                currencyPrefix="R$/hr"
+                readOnly
+              />
+
+              <AdvancedField
+                label="Manutenção Mensal"
+                value={context.custoManutencaoMensalCorteLaser}
+                onChange={(e) =>
+                  context.setCustoManutencaoMensalCorteLaser(e.target.value)
+                }
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                currencyPrefix="R$/mês"
+              />
+
+              <AdvancedField
+                label="Taxa de manutenção"
+                value={costs.taxaManutencaoHoraCorteLaser.toFixed(2)}
+                placeholder="0"
+                currencyPrefix="R$/hr"
+                readOnly
+              />
+
+              <AdvancedField
+                label="Consumo de energia"
+                value={context.consumoEletricoCorteLaser}
+                onChange={(e) =>
+                  context.setConsumoEletricoCorteLaser(e.target.value)
+                }
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                currencyPrefix="w"
+              />
+            </div>
           </div>
         )}
       </div>

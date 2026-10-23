@@ -47,24 +47,41 @@ function AppContent() {
     const taxaManutencaoHoraLavaCura =
       context.custoManutencaoMensalLavaCura / (30 * 24);
 
+    const depreciacaoCorteLaser =
+      parseFloat(context.precoCorteLaser) /
+      parseFloat(context.vidaUtilCorteLaser);
+    const taxaManutencaoHoraCorteLaser =
+      context.custoManutencaoMensalCorteLaser / (30 * 24);
+
     const isResina = context.tipoImpressao === "resina";
+    const isCorteLaser = context.tipoImpressao === "laser";
 
     // Usar valores corretos de depreciação e manutenção baseado no tipo de impressão
-    const depreciacaoEquipamento = isResina ? depreciacaoResina : depreciacao;
+    const depreciacaoEquipamento = isResina
+      ? depreciacaoResina
+      : isCorteLaser
+        ? depreciacaoCorteLaser
+        : depreciacao;
 
     const taxaManutencaoHoraEquipamento = isResina
       ? taxaManutencaoHoraResina
-      : taxaManutencaoHora;
+      : isCorteLaser
+        ? taxaManutencaoHoraCorteLaser
+        : taxaManutencaoHora;
 
     const unidadesPlaca = parseFloat(context.unidadesPorPlaca) || 1;
     const unidadesTotal = parseFloat(context.totalDeUnidades) || 1;
 
-    const custoDeMaterial = (material * precoPorGrama) / unidadesPlaca;
+    const custoDeMaterial = isCorteLaser
+      ? (material * (parseFloat(context.precoMaterial) || 0)) / unidadesPlaca
+      : (material * precoPorGrama) / unidadesPlaca;
 
     // Custo de energia varia de acordo com o tipo de impressora
     const consumoEletricoAtivo = isResina
       ? parseFloat(context.consumoEletricoImpressoraResina) || 0
-      : parseFloat(context.consumoEletricoImpressora) || 0;
+      : isCorteLaser
+        ? parseFloat(context.consumoEletricoCorteLaser) || 0
+        : parseFloat(context.consumoEletricoImpressora) || 0;
 
     const usoLavaCuraHoras = isResina ? context.duracaoUsoLavaCura / 60 : 0;
 
@@ -226,6 +243,9 @@ function AppContent() {
 
       depreciacaoResina,
       taxaManutencaoHoraResina,
+
+      depreciacaoCorteLaser,
+      taxaManutencaoHoraCorteLaser,
 
       custoDeMaterial,
       custoDeEnergia,

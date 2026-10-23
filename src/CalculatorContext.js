@@ -19,7 +19,7 @@ export function CalculatorProvider({ children }) {
   const [tempoDeTrabalhoAdicional, setTempoDeTrabalhoAdicional] = useState("");
   const [custoAcessorios, setCustoAcessorios] = useState("");
   const [custoEmbalagem, setCustoEmbalagem] = useState("1");
-  const [impostos, setImpostos] = useState("0");
+  const [impostos, setImpostos] = useState("10");
   const [taxaCartaoCredito, setTaxaCartaoCredito] = useState("10");
   const [marketplaceSelecionado, setMarketplaceSelecionado] =
     useState("semarketplace");
@@ -54,6 +54,14 @@ export function CalculatorProvider({ children }) {
   const [custoManutencaoMensalLavaCura, setCustoManutencaoMensalLavaCura] =
     useState("150");
   const [duracaoUsoLavaCura, setDuracaoUsoLavaCura] = useState("6");
+
+  // Corte a laser
+  const [precoCorteLaser, setPrecoCorteLaser] = useState("2000");
+  const [vidaUtilCorteLaser, setVidaUtilCorteLaser] = useState("20000");
+  const [custoManutencaoMensalCorteLaser, setCustoManutencaoMensalCorteLaser] =
+    useState("50");
+  const [consumoEletricoCorteLaser, setConsumoEletricoCorteLaser] =
+    useState("10");
 
   const [
     custoMateriaisDescartaveisResina,
@@ -155,6 +163,16 @@ export function CalculatorProvider({ children }) {
     setCustoManutencaoMensalLavaCura,
     duracaoUsoLavaCura,
     setDuracaoUsoLavaCura,
+
+    // Corte a laser
+    precoCorteLaser,
+    setPrecoCorteLaser,
+    vidaUtilCorteLaser,
+    setVidaUtilCorteLaser,
+    custoManutencaoMensalCorteLaser,
+    setCustoManutencaoMensalCorteLaser,
+    consumoEletricoCorteLaser,
+    setConsumoEletricoCorteLaser,
 
     // Custos horários
     custoMaoDeObraHora,

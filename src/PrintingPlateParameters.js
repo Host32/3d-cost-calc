@@ -16,13 +16,24 @@ const MATERIAIS_RESINA = {
   personalizado: { nome: "Personalizado", preco: null },
 };
 
+const MATERIAIS_LASER = {
+  mdf_2_5mm: { nome: "MDF 2,5mm", preco: 1.5 },
+  mdf_3mm: { nome: "MDF 3mm", preco: 2.0 },
+  personalizado: { nome: "Personalizado", preco: null },
+};
+
 function PrintingPlateParameters() {
   const context = useContext(CalculatorContext);
 
+  const getMateriaisPorTipo = (tipo) => {
+    if (tipo === "resina") return MATERIAIS_RESINA;
+    if (tipo === "laser") return MATERIAIS_LASER;
+    return MATERIAIS;
+  };
+
   const handleMudarTipoMaterial = (novoTipo) => {
     context.setTipoFilamento(novoTipo);
-    const materiaisAtivos =
-      context.tipoImpressao === "resina" ? MATERIAIS_RESINA : MATERIAIS;
+    const materiaisAtivos = getMateriaisPorTipo(context.tipoImpressao);
     if (novoTipo !== "personalizado" && materiaisAtivos[novoTipo].preco) {
       context.setPrecoMaterial(materiaisAtivos[novoTipo].preco);
     }
@@ -31,8 +42,7 @@ function PrintingPlateParameters() {
   const handleMudarTipoImpressao = (novoTipo) => {
     context.setTipoImpressao(novoTipo);
     // Resetar seleção de material para o primeiro da nova categoria
-    const materiaisAtivos =
-      novoTipo === "resina" ? MATERIAIS_RESINA : MATERIAIS;
+    const materiaisAtivos = getMateriaisPorTipo(novoTipo);
     const primeiroMaterial = Object.keys(materiaisAtivos)[0];
     context.setTipoFilamento(primeiroMaterial);
     if (materiaisAtivos[primeiroMaterial].preco) {
@@ -42,20 +52,26 @@ function PrintingPlateParameters() {
     if (novoTipo === "resina") {
       context.setTempoPreparacaoMinutos("10");
       context.setTempoFinalizacaoMinutos("20");
+    } else if (novoTipo === "laser") {
+      context.setTempoPreparacaoMinutos("15");
+      context.setTempoFinalizacaoMinutos("5");
     } else {
       context.setTempoPreparacaoMinutos("5");
       context.setTempoFinalizacaoMinutos("5");
     }
   };
 
+  const isLaser = context.tipoImpressao === "laser";
+  const isResina = context.tipoImpressao === "resina";
+
   return (
     <div className="card card-section mb-2">
       <div className="card-header-custom">
-        <h3>Parâmetros por placa de impressão</h3>
+        <h3>Parâmetros por placa</h3>
       </div>
       <div className="card-body">
         <div className="col mb-3">
-          <label className="form-label">Tipo de Impressão</label>
+          <label className="form-label">Tipo de fabricação</label>
           <select
             className="form-control"
             value={context.tipoImpressao}
@@ -63,35 +79,41 @@ function PrintingPlateParameters() {
           >
             <option value="filamento">Filamento</option>
             <option value="resina">Resina</option>
+            <option value="laser">Corte a laser</option>
           </select>
         </div>
         <div className="row">
           <div className="col mb-3">
             <label className="form-label">
-              {context.tipoImpressao === "resina" ? "Resina" : "Filamento"}
+              {isResina ? "Resina" : isLaser ? "Material" : "Filamento"}
             </label>
             <select
               className="form-control"
               value={context.tipoFilamento}
               onChange={(e) => handleMudarTipoMaterial(e.target.value)}
             >
-              {Object.entries(
-                context.tipoImpressao === "resina"
-                  ? MATERIAIS_RESINA
-                  : MATERIAIS,
-              ).map(([chave, filamento]) => (
-                <option key={chave} value={chave}>
-                  {filamento.nome}
-                  {filamento.preco && ` - R$ ${filamento.preco}`}
-                </option>
-              ))}
+              {Object.entries(getMateriaisPorTipo(context.tipoImpressao)).map(
+                ([chave, filamento]) => (
+                  <option key={chave} value={chave}>
+                    {filamento.nome}
+                    {filamento.preco &&
+                      ` - R$ ${
+                        isLaser
+                          ? filamento.preco.toFixed(2).replace(".", ",")
+                          : filamento.preco
+                      }`}
+                  </option>
+                ),
+              )}
             </select>
           </div>
 
           <div className="col mb-3">
             <label className="form-label">Custo</label>
             <div className="input-group">
-              <span className="input-group-text">R$/Kg</span>
+              <span className="input-group-text">
+                {isLaser ? "R$/Chapa" : "R$/Kg"}
+              </span>
               <input
                 type="number"
                 className="form-control"
@@ -108,9 +130,13 @@ function PrintingPlateParameters() {
 
         <div className="row mb-3">
           <div className="col">
-            <label className="form-label">Peso Total</label>
+            <label className="form-label">
+              {isLaser ? "Chapas necessárias" : "Peso Total"}
+            </label>
             <div className="input-group">
-              <span className="input-group-text">g</span>
+              <span className="input-group-text">
+                {isLaser ? "Chapas" : "g"}
+              </span>
               <input
                 type="number"
                 className="form-control"
@@ -123,7 +149,9 @@ function PrintingPlateParameters() {
             </div>
           </div>
           <div className="col">
-            <label className="form-label">Duração da impressão</label>
+            <label className="form-label">
+              {isLaser ? "Duração do corte" : "Duração da impressão"}
+            </label>
             <div className="input-group">
               <input
                 type="number"
